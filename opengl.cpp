@@ -53,11 +53,8 @@ float oglChamsColor[3];
 
 GLuint textureID=0;
 
-PBYTE dwFSBase=0,dwFSBase2=0;tSetCltProcTable pSetCltProcTable=NULL;
-VOID WINAPI DoTIBHook(PBYTE dwFSBase,PBYTE dwFSBase2);
-
-BOOL WINAPI CheckFuncs(){
-  static BOOL bCheckOK=FALSE;
+BOOL CheckFuncs(){
+  static bool bCheckOK=FALSE;
   if(!bCheckOK)
     bCheckOK=(pglEnable&&pglDisable&&pglColor4f&&pglGetFloatv&&pglGetIntegerv&&pglClearColor&&pglTexEnvi&&pglBlendFunc&&pglDepthRange&&pglDepthFunc&&pglClear&&
       pglVertex3f&&pglVertex3fv&&pglBegin&&pglEnd&&pglFrustum&&pglReadBuffer&&pglReadPixels&&pglPolygonMode&&pglLineWidth&&pglColor3f);
@@ -332,69 +329,4 @@ void APIENTRY glDrawTexture(GLint x,GLint y,GLint width,GLint height){
     pglEnd();
   if(pglDisable)
     pglDisable(GL_TEXTURE_2D);
-}
-
-BOOL WINAPI HookOpenGl(){
-  CONTEXT Context;LDT_ENTRY SelEntry;
-  Context.ContextFlags=CONTEXT_FULL|CONTEXT_DEBUG_REGISTERS;
-  DWORD pdwTlsOffset=0,pdwSetCltProcTable=0,pdwTlsIndex=0,dwTlsOffset=0,dwTlsIndex=0;BOOL bThisCall=FALSE;
-
-  if((hOpengl32=GetModuleHandle("opengl32.dll"))==NULL){
-    return FALSE;
-  }
-
-  if(!GetOffsets(hOpengl32,&pdwTlsOffset,&pdwSetCltProcTable,&pdwTlsIndex,&bThisCall))
-    return FALSE;
-
-  DWORD dwThreadId,dwProcessId;
-  HWND hdHalfLife=FindWindow(NULL,"Counter-Strike");
-  if(hdHalfLife){
-    dwThreadId=GetWindowThreadProcessId(hdHalfLife,&dwProcessId);
-  }
-
-  HANDLE hThread=OpenThread(THREAD_GET_CONTEXT|THREAD_SUSPEND_RESUME|THREAD_QUERY_INFORMATION,FALSE,dwThreadId);
-  if(!hThread){
-    return FALSE;
-  }
-
-  if(!GetThreadContext(hThread,&Context)){
-    CloseHandle(hThread);
-    return FALSE;
-  }
-
-  GetThreadSelectorEntry(hThread,Context.SegFs,&SelEntry);
-  dwFSBase=(PBYTE)((SelEntry.HighWord.Bits.BaseHi<<24)|
-    (SelEntry.HighWord.Bits.BaseMid<<16)|SelEntry.BaseLow);
-  if(!dwFSBase||IsBadReadPtr((PVOID)dwFSBase,4)){
-    return FALSE;
-  }
-
-  dwTlsOffset=((DWORD)hOpengl32)+pdwTlsOffset;
-  if(IsBadReadPtr((PVOID)dwTlsOffset,4)){
-    return FALSE;
-  }
-
-  if(pdwTlsIndex){
-    dwTlsIndex=((DWORD)hOpengl32)+pdwTlsIndex;
-    if(IsBadReadPtr((PVOID)dwTlsIndex,4)){
-      return FALSE;
-    }
-  }
-
-  do{//multiple redirect...
-    Sleep(100);
-    if(dwTlsIndex&&(*(PDWORD)dwTlsIndex)>TLS_MINIMUM_AVAILABLE)
-      dwFSBase2=(PBYTE)GetValueFromTeb((PTEB)dwFSBase,*((PDWORD)dwTlsIndex));
-    else
-      dwFSBase2=(PBYTE)(*(PDWORD)((DWORD)dwFSBase+(*(PDWORD)dwTlsOffset)));
-  }while(dwFSBase2==NULL);
-
-  //do Hook
-  SuspendThread(hThread);
-  DoTIBHook(dwFSBase,dwFSBase2);
-
-  ResumeThread(hThread);
-  CloseHandle(hThread);
-
-  return TRUE;
 }

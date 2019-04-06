@@ -42,11 +42,19 @@ __typeof__(glUnmapBuffer)*pglUnmapBuffer;
 __typeof__(glGenBuffers)*pglGenBuffers;
 __typeof__(glBufferData)*pglBufferData;
 
-typedef int (WINAPI *tSetCltProcTable)(PDWORD pDst1,PDWORD pDst2,DWORD iSize);
+void APIENTRY hglBegin(GLenum mode);
+void APIENTRY hglClear(GLbitfield mask);
+void APIENTRY hglVertex3fv(const GLfloat *v);
+void APIENTRY hglEnable(GLenum mode);
+void APIENTRY hglDisable(GLenum mode);
+void APIENTRY hglFrustum(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top,GLdouble zNear,GLdouble zFar);
+void APIENTRY hglBlendFunc(GLenum sfactor,GLenum dfactor);
+void APIENTRY hglColor4f(GLfloat red,GLfloat green,GLfloat blue,GLfloat alpha);
+void APIENTRY hglViewport(GLint x,GLint y,GLsizei width,GLsizei height);
+void APIENTRY hglReadPixels(GLint x,GLint	y,GLsizei	width,GLsizei	height,GLenum format,GLenum type,GLvoid *data);
 
-BOOL WINAPI HookOpenGl();
-void WINAPI glCreateTextureBuffer(GLint width,GLint height,GLvoid* data);
-void WINAPI glDrawTexture(GLint x,GLint y,GLint width,GLint height);
+void APIENTRY glCreateTextureBuffer(GLint width,GLint height,GLvoid* data);
+void APIENTRY glDrawTexture(GLint x,GLint y,GLint width,GLint height);
 
 extern bool oglSubtractive;
 extern bool oglChams;
