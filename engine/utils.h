@@ -16,7 +16,6 @@
 #ifndef _UTILS_H
 #define _UTILS_H
 
-#include <windows.h>
 #include "../engine/wrect.h"
 #include "../engine/cl_dll.h"
 #include "../engine/cdll_int.h"
@@ -49,12 +48,12 @@ typedef struct usermsg_s{
 
 class cGetFunc {
   public:
-    cGetFunc():umt(NULL),et(NULL),ct(NULL){}
+    cGetFunc():umt(0),et(0),ct(0){}
     void Init();
 
-    pfnCommand GetAddCommand(PCHAR name);
-    pfnEventHook GetHookEvent(PCHAR name);
-    pfnUserMsgHook GetHookUserMsg(PCHAR name);
+    pfnCommand GetAddCommand(char*name);
+    pfnEventHook GetHookEvent(char*name);
+    pfnUserMsgHook GetHookUserMsg(char*name);
   private:
     usermsg_t *umt;
     event_t *et;
