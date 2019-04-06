@@ -35,28 +35,30 @@
 
 #include "utils.h"
 
-typedef PBYTE (*tGetBaseGun)(int index);
+#define MAX_PATH 260
 
-extern HINSTANCE g_hInstance;
-extern DWORD g_dwModSize;
+typedef unsigned char*(*tGetBaseGun)(int index);
 
-extern CHAR dllpath[MAX_PATH];
-extern CHAR chtpath[MAX_PATH];
-extern CHAR drvpath[MAX_PATH];
-extern CHAR inipath[MAX_PATH];
-extern CHAR cfgpath[MAX_PATH];
-extern CHAR waypath[MAX_PATH];
-extern CHAR nkspath[MAX_PATH];
-extern CHAR scrpath[MAX_PATH];
+extern void*g_hInstance;
+extern unsigned int g_dwModSize;
 
-extern BOOL iniFound;
-extern BOOL cfgFound;
-extern BOOL wayFound;
-extern BOOL nksFound;
-extern BOOL scrFound;
+extern char dllpath[MAX_PATH];
+extern char chtpath[MAX_PATH];
+extern char drvpath[MAX_PATH];
+extern char inipath[MAX_PATH];
+extern char cfgpath[MAX_PATH];
+extern char waypath[MAX_PATH];
+extern char nkspath[MAX_PATH];
+extern char scrpath[MAX_PATH];
 
-extern BOOL bInvalidVideoMode;
-extern BOOL bSteam;
+extern bool iniFound;
+extern bool cfgFound;
+extern bool wayFound;
+extern bool nksFound;
+extern bool scrFound;
+
+extern bool bInvalidVideoMode;
+extern bool bSteam;
 
 extern exporttable_t *pExport;
 extern cl_enginefunc_t *pEngfuncs;
@@ -71,7 +73,7 @@ extern engine_studio_api_t gEngStudio;
 extern r_studio_interface_t gInterface;
 extern studio_model_renderer_t gRenderer;
 
-extern PVOID PreSDynamicSoundAddress;
+extern void* PreSDynamicSoundAddress;
 extern double* globalTime;
 
 extern tGetBaseGun pGetBaseGun;
