@@ -55,7 +55,7 @@ clean:
 all: $(BIN_PATH)/$(BIN_NAME)
 	@echo "Making symlink: $(BIN_NAME) -> $<"
 	@$(RM) $(BIN_NAME)
-	@ln -s $(BIN_PATH)/$(BIN_NAME) $(BIN_NAME)
+	#@ln -s $(BIN_PATH)/$(BIN_NAME) $(BIN_NAME)
 
 # Creation of the executable
 $(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
