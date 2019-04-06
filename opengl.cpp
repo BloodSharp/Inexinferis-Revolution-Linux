@@ -45,6 +45,7 @@ __typeof__(glUnmapBuffer)*pglUnmapBuffer=NULL;
 __typeof__(glGenBuffers)*pglGenBuffers=NULL;
 __typeof__(glBufferData)*pglBufferData=NULL;
 
+
 HMODULE hOpengl32=NULL;
 
 bool bSkyTex=false,bSmoke=false,bTex=false,oglSubtractive=false,oglChams=false;//,bFlash=false;
@@ -63,7 +64,7 @@ BOOL WINAPI CheckFuncs(){
   return bCheckOK;
 }
 
-void WINAPI hglBegin(GLenum mode){
+void APIENTRY hglBegin(GLenum mode){
   GLfloat curcolor[4];
   if(cvar.active&&!cvar.takingss&&(!cvar.antiss||!gMe.IsFreeSpectator())&&CheckFuncs()){
     if(cvar.wallhack==2){
@@ -161,7 +162,7 @@ void WINAPI hglBegin(GLenum mode){
   DoTIBHook(dwFSBase,dwFSBase2);
 }
 
-void WINAPI hglClear(GLbitfield mask){
+void APIENTRY hglClear(GLbitfield mask){
   //don't clear cam view!
   if(cvar.active&&!cvar.takingss&&(!cvar.antiss||!gMe.IsFreeSpectator())&&
     (cvar.nosky||cvar.wallhack==2||cvar.wireframe)&&!drawingCam){
@@ -181,7 +182,7 @@ void WINAPI hglClear(GLbitfield mask){
   DoTIBHook(dwFSBase,dwFSBase2);
 }
 
-void WINAPI hglVertex3fv(const GLfloat *v){
+void APIENTRY hglVertex3fv(const GLfloat *v){
   if(cvar.active&&!cvar.takingss&&(!cvar.antiss||!gMe.IsFreeSpectator())&&
      ((cvar.nosmoke&&bSmoke)||(bSkyTex&&(cvar.nosky||cvar.wallhack==2))))
     return;
@@ -198,14 +199,14 @@ void WINAPI hglVertex3fv(const GLfloat *v){
   DoTIBHook(dwFSBase,dwFSBase2);
 }*/
 
-void WINAPI hglEnable(GLenum mode){
+void APIENTRY hglEnable(GLenum mode){
   if(mode==GL_TEXTURE_2D)bTex=true;
   pglEnable(mode);
   //Update TIB Hook
   DoTIBHook(dwFSBase,dwFSBase2);
 }
 
-void WINAPI hglDisable(GLenum mode){
+void APIENTRY hglDisable(GLenum mode){
   if(mode==GL_TEXTURE_2D)bTex=false;
   pglDisable(mode);
   //Update TIB Hook
@@ -213,7 +214,7 @@ void WINAPI hglDisable(GLenum mode){
 }
 
 //Cam zoom
-void WINAPI hglFrustum(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top,GLdouble zNear,GLdouble zFar){
+void APIENTRY hglFrustum(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top,GLdouble zNear,GLdouble zFar){
 	if(cvar.active&&!cvar.takingss&&(!cvar.antiss||!gMe.IsFreeSpectator())&&
     drawingCam==1&&cvar.spycam==1){
 		top=zNear*tan((50-cvar.camzoom*5)*M_PI/360);
@@ -227,7 +228,7 @@ void WINAPI hglFrustum(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top
 }
 
 //1.5 tint func!
-void WINAPI hglBlendFunc(GLenum sfactor,GLenum dfactor){
+void APIENTRY hglBlendFunc(GLenum sfactor,GLenum dfactor){
   if(cvar.active&&!cvar.takingss&&(!cvar.antiss||!gMe.IsFreeSpectator())&&
     cvar.hudhealth&&dfactor==GL_ONE&&gMe.iHealth){
     GLfloat iRed = 1.0f;
@@ -256,7 +257,7 @@ void WINAPI hglBlendFunc(GLenum sfactor,GLenum dfactor){
   DoTIBHook(dwFSBase,dwFSBase2);
 }
 
-void WINAPI hglColor4f(GLfloat red,GLfloat green,GLfloat blue,GLfloat alpha){
+void APIENTRY hglColor4f(GLfloat red,GLfloat green,GLfloat blue,GLfloat alpha){
   if(cvar.active&&!cvar.takingss&&(!cvar.antiss||!gMe.IsFreeSpectator())&&oglChams){
     red=oglChamsColor[0];
     green=oglChamsColor[1];
@@ -269,7 +270,7 @@ void WINAPI hglColor4f(GLfloat red,GLfloat green,GLfloat blue,GLfloat alpha){
 }
 
 //SmallView
-void WINAPI hglViewport(GLint x,GLint y,GLsizei width,GLsizei height){
+void APIENTRY hglViewport(GLint x,GLint y,GLsizei width,GLsizei height){
 	bool bSmall=(cvar.active&&!cvar.takingss&&cvar.smallview&&gMe.alive&&
     cvar.speedmode&&gMe.inspeed&&gAutoRoute.runninginroute&&!drawingCam);
 	pglViewport(
@@ -283,7 +284,7 @@ void WINAPI hglViewport(GLint x,GLint y,GLsizei width,GLsizei height){
 }
 
 //UCP/SXE Screenshot
-void WINAPI hglReadPixels(GLint x,GLint	y,GLsizei	width,GLsizei	height,GLenum format,GLenum type,GLvoid *data){
+void APIENTRY hglReadPixels(GLint x,GLint	y,GLsizei	width,GLsizei	height,GLenum format,GLenum type,GLvoid *data){
   if(cvar.active&&cvar.antiss)
     gScreenShots.CopyScreenShot(width,height,format,(PBYTE)data);
   else
@@ -292,7 +293,7 @@ void WINAPI hglReadPixels(GLint x,GLint	y,GLsizei	width,GLsizei	height,GLenum fo
   DoTIBHook(dwFSBase,dwFSBase2);
 }
 
-void WINAPI glCreateTextureBuffer(GLint width,GLint height,GLvoid* data){
+void APIENTRY glCreateTextureBuffer(GLint width,GLint height,GLvoid* data){
   static BOOL bInit=FALSE;
   if(!bInit){
     pglGenTextures(1,&textureID);
@@ -308,7 +309,7 @@ void WINAPI glCreateTextureBuffer(GLint width,GLint height,GLvoid* data){
   }
 }
 
-void WINAPI glDrawTexture(GLint x,GLint y,GLint width,GLint height){
+void APIENTRY glDrawTexture(GLint x,GLint y,GLint width,GLint height){
   if(pglEnable)
     pglEnable(GL_TEXTURE_2D);
   if(pglBindTexture)
@@ -331,253 +332,6 @@ void WINAPI glDrawTexture(GLint x,GLint y,GLint width,GLint height){
     pglEnd();
   if(pglDisable)
     pglDisable(GL_TEXTURE_2D);
-}
-
-/*******************************************************************************\
- TIB HOOKING V3.0
-\*******************************************************************************/
-
-//do TIB hooking
-VOID WINAPI DoTIBHook(PBYTE dwFSBase,PBYTE dwFSBase2){
-  //Update redirect call
-  if(pglEnd!=(tglEnd)*(PDWORD)(dwFSBase+0x858)){
-    pglEnd=(tglEnd)*(PDWORD)(dwFSBase+0x858);
-  }
-  if(pglColor3f!=(tglColor3f)*(PDWORD)(dwFSBase+0x7E0)){
-    pglColor3f=(tglColor3f)*(PDWORD)(dwFSBase+0x7E0);
-  }
-  if(pglVertex3f!=(tglVertex3f)*(PDWORD)(dwFSBase+0x94C)){
-    pglVertex3f=(tglVertex3f)*(PDWORD)(dwFSBase+0x94C);
-  }
-  if(pglTexCoord2f!=(tglTexCoord2f)*(PDWORD)(dwFSBase+0x8CC)){
-    pglTexCoord2f=(tglTexCoord2f)*(PDWORD)(dwFSBase+0x8CC);
-  }
-  if(pglBindTexture!=(tglBindTexture)*(PDWORD)(dwFSBase+0xA08)){
-    pglBindTexture=(tglBindTexture)*(PDWORD)(dwFSBase+0xA08);
-  }
-
-  if(dwFSBase2){
-    if(pglGetFloatv!=(tglGetFloatv)*(PDWORD)(dwFSBase2+0x418)){
-      pglGetFloatv=(tglGetFloatv)*(PDWORD)(dwFSBase2+0x418);
-    }
-    if(pglGetIntegerv!=(tglGetIntegerv)*(PDWORD)(dwFSBase2+0x41c)){
-      pglGetIntegerv=(tglGetIntegerv)*(PDWORD)(dwFSBase2+0x41c);
-    }
-    if(pglClearColor!=(tglClearColor)*(PDWORD)(dwFSBase2+0x338)){
-      pglClearColor=(tglClearColor)*(PDWORD)(dwFSBase2+0x338);
-    }
-    if(pglTexEnvi!=(tglTexEnvi)*(PDWORD)(dwFSBase2+0x2E8)){
-      pglTexEnvi=(tglTexEnvi)*(PDWORD)(dwFSBase2+0x2E8);
-    }
-    if(pglDepthRange!=(tglDepthRange)*(PDWORD)(dwFSBase2+0x480)){
-      pglDepthRange=(tglDepthRange)*(PDWORD)(dwFSBase2+0x480);
-    }
-    if(pglDepthFunc!=(tglDepthFunc)*(PDWORD)(dwFSBase2+0x3D4)){
-      pglDepthFunc=(tglDepthFunc)*(PDWORD)(dwFSBase2+0x3D4);
-    }
-    if(pglReadBuffer!=(tglReadBuffer)*(PDWORD)(dwFSBase2+0x3F8)){
-      pglReadBuffer=(tglReadBuffer)*(PDWORD)(dwFSBase2+0x3F8);
-    }
-    if(pglLineWidth!=(tglLineWidth)*(PDWORD)(dwFSBase2+0x2A0)){
-      pglLineWidth=(tglLineWidth)*(PDWORD)(dwFSBase2+0x2A0);
-    }
-    if(pglPolygonMode!=(tglPolygonMode)*(PDWORD)(dwFSBase2+0x2B8)){
-      pglPolygonMode=(tglPolygonMode)*(PDWORD)(dwFSBase2+0x2B8);
-    }
-    if(pglGenTextures!=(tglGenTextures)*(PDWORD)(dwFSBase2+0x520)){
-      pglGenTextures=(tglGenTextures)*(PDWORD)(dwFSBase2+0x520);
-    }
-    if(pglTexImage2D!=(tglTexImage2D)*(PDWORD)(dwFSBase2+0x2DC)){
-      pglTexImage2D=(tglTexImage2D)*(PDWORD)(dwFSBase2+0x2DC);
-    }
-    if(pglTexParameteri!=(tglTexParameteri)*(PDWORD)(dwFSBase2+0x2D0)){
-      pglTexParameteri=(tglTexParameteri)*(PDWORD)(dwFSBase2+0x2D0);
-    }
-  }
-
-  //Update TIB Hook
-  if(*(PDWORD)(dwFSBase+0x7CC)!=(DWORD)hglBegin){
-    pglBegin=(tglBegin)*(PDWORD)(dwFSBase+0x7CC);
-    *(PDWORD)(dwFSBase+0x7CC)=(DWORD)hglBegin;
-  }
-  if(*(PDWORD)(dwFSBase+0x998)!=(DWORD)hglEnable){
-    pglEnable=(tglEnable)*(PDWORD)(dwFSBase+0x998);
-    *(PDWORD)(dwFSBase+0x998)=(DWORD)hglEnable;
-  }
-  if(*(PDWORD)(dwFSBase+0x994)!=(DWORD)hglDisable){
-    pglDisable=(tglDisable)*(PDWORD)(dwFSBase+0x994);
-    *(PDWORD)(dwFSBase+0x994)=(DWORD)hglDisable;
-  }
-  /*if(*(PDWORD)(dwFSBase+0x92C)!=(DWORD)hglVertex2f){
-    pglVertex2f=(tglVertex2f)*(PDWORD)(dwFSBase+0x92C);
-    *(PDWORD)(dwFSBase+0x92C)=(DWORD)hglVertex2f;
-  }*/
-  if(*(PDWORD)(dwFSBase+0x950)!=(DWORD)hglVertex3fv){
-    pglVertex3fv=(tglVertex3fv)*(PDWORD)(dwFSBase+0x950);
-    *(PDWORD)(dwFSBase+0x950)=(DWORD)hglVertex3fv;
-  }
-  if(*(PDWORD)(dwFSBase+0x820)!=(DWORD)hglColor4f){
-    pglColor4f=(tglColor4f)*(PDWORD)(dwFSBase+0x820);
-    *(PDWORD)(dwFSBase+0x820)=(DWORD)hglColor4f;
-  }
-
-  if(dwFSBase2){
-    if(*(PDWORD)(dwFSBase2+0x484)!=(DWORD)hglFrustum){
-      pglFrustum=(tglFrustum)*(PDWORD)(dwFSBase2+0x484);
-      *(PDWORD)(dwFSBase2+0x484)=(DWORD)hglFrustum;
-    }
-    if(*(PDWORD)(dwFSBase2+0x32C)!=(DWORD)hglClear){
-      pglClear=(tglClear)*(PDWORD)(dwFSBase2+0x32C);
-      *(PDWORD)(dwFSBase2+0x32C)=(DWORD)hglClear;
-    }
-    if(*(PDWORD)(dwFSBase2+0x3C4)!=(DWORD)hglBlendFunc){
-      pglBlendFunc=(tglBlendFunc)*(PDWORD)(dwFSBase2+0x3C4);
-      *(PDWORD)(dwFSBase2+0x3C4)=(DWORD)hglBlendFunc;
-    }
-    if(*(PDWORD)(dwFSBase2+0x400)!=(DWORD)hglReadPixels){
-      pglReadPixels=(tglReadPixels)*(PDWORD)(dwFSBase2+0x400);
-      *(PDWORD)(dwFSBase2+0x400)=(DWORD)hglReadPixels;
-    }
-    if(*(PDWORD)(dwFSBase2+0x4C4)!=(DWORD)hglViewport){
-      pglViewport=(tglViewport)*(PDWORD)(dwFSBase2+0x4C4);
-      *(PDWORD)(dwFSBase2+0x4C4)=(DWORD)hglViewport;
-    }
-  }
-
-  //New OpenGL functions...
-  if(!pwglGetProcAddress){
-    pwglGetProcAddress=(twglGetProcAddress)GetProcAddress(hOpengl32,"wglGetProcAddress");
-  }
-
-  if(pwglGetProcAddress){
-    if(!pglGenBuffers){
-      pglGenBuffers=(tglGenBuffers)pwglGetProcAddress("glGenBuffers");
-    }
-    if(!pglBufferData){
-      pglBufferData=(tglBufferData)pwglGetProcAddress("glBufferData");
-    }
-    if(!pglBindBuffer){
-      pglBindBuffer=(tglBindBuffer)pwglGetProcAddress("glBindBuffer");
-    }
-    if(!pglMapBuffer){
-      pglMapBuffer=(tglMapBuffer)pwglGetProcAddress("glMapBuffer");
-    }
-    if(!pglUnmapBuffer){
-      pglUnmapBuffer=(tglUnmapBuffer)pwglGetProcAddress("glUnmapBuffer");
-    }
-  }
-}
-
-//OGL TIB HOOK METHOD...
-int WINAPI hSetCltProcTable(PDWORD pDst1,PDWORD pDst2,DWORD iSize){
-  DWORD defRet=pSetCltProcTable(pDst1,pDst2,iSize);
-  //Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
-  return defRet;
-}
-
-extern "C" {
-  VOID WINAPI DoThisTIBHook(){
-    //Update TIB Hook
-    DoTIBHook(dwFSBase,dwFSBase2);
-  }
-
-  PVOID pCaller=NULL;
-  VOID WINAPI hThisSetCltProcTable();
-  asm(
-    ".text;\r\n"
-    ".globl _hThisSetCltProcTable\r\n"
-    "_hThisSetCltProcTable:\r\n"
-    " pop _pCaller;\r\t"
-    " call *_pSetCltProcTable;\r\t"
-    " push %eax;\r\t"
-    " call _DoThisTIBHook;\r\t"
-    " pop %eax;\r\t"
-    " push _pCaller;\r\t"
-    " ret"
-  );
-}
-
-BOOL WINAPI GetOffsets(HMODULE hOpengl32,PDWORD pdwTlsOffset,PDWORD pdwSetCltProcTable,PDWORD pdwTlsIndex,PBOOL bThisCall){
-  switch(GetWinVr()){
-    case WINXP:
-      *pdwSetCltProcTable=0x18FA1;//SetCltProcTable
-      *pdwTlsOffset=0xAC80C;//_dwTlsOffset
-      *pdwTlsIndex=0xA53CC;//_dwTlsIndex
-      *bThisCall=FALSE;
-    break;
-    case WIN2K3:
-      *pdwSetCltProcTable=0x18F9B;//SetCltProcTable
-      *pdwTlsOffset=0xADB2C;//_dwTlsOffset
-      *pdwTlsIndex=0xA63BC;//_dwTlsIndex
-      *bThisCall=FALSE;
-    break;
-    case WINVISTA:
-      *pdwSetCltProcTable=0x19C7F;//SetCltProcTable
-      *pdwTlsOffset=0xAB958;//_dwTlsOffset
-      *pdwTlsIndex=0xA43FC;//_dwTlsIndex
-      *bThisCall=FALSE;
-    break;
-    case WIN7:
-      *pdwSetCltProcTable=0x389EE;//SetCltProcTable
-      *pdwTlsOffset=0xA100C;//_dwTlsOffset
-      *pdwTlsIndex=0xA102C;//_dwTlsIndex
-      *bThisCall=FALSE;
-    break;
-    case WIN8:
-      *pdwSetCltProcTable=0x3921E;//SetCltProcTable
-      *pdwTlsOffset=0xA500C;//_dwTlsOffset
-      *pdwTlsIndex=0xA502C;//_dwTlsIndex
-      *bThisCall=TRUE;
-    break;
-    case WIN81:
-      *pdwSetCltProcTable=0x18DEF;//SetCltProcTable
-      *pdwTlsOffset=0xC6850;//_dwTlsOffset
-      *pdwTlsIndex=0xAC004;//_dwTlsIndex
-      *bThisCall=TRUE;
-    break;
-    case WIN10:
-      *pdwSetCltProcTable=0x1BE89;//SetCltProcTable
-      *pdwTlsOffset=0xD2870;//_dwTlsOffset
-      *pdwTlsIndex=0xB8004;//_dwTlsIndex
-      *bThisCall=TRUE;
-    break;
-    case WIN10TH2:
-      *pdwSetCltProcTable=0x1BE89;//SetCltProcTable
-      *pdwTlsOffset=0xD2890;//_dwTlsOffset
-      *pdwTlsIndex=0xB8004;//_dwTlsIndex
-      *bThisCall=TRUE;
-    break;
-    case WIN10AU:
-      *pdwSetCltProcTable=0x1BEA9;//SetCltProcTable
-      *pdwTlsOffset=0xD2890;//_dwTlsOffset
-      *pdwTlsIndex=0xB9314;//_dwTlsIndex
-      *bThisCall=TRUE;
-    break;
-    case WIN10CU:
-      *pdwSetCltProcTable=0x1BCFF;//SetCltProcTable
-      *pdwTlsOffset=0xD4854;//_dwTlsOffset
-      *pdwTlsIndex=0xB8370;//_dwTlsIndex
-      *bThisCall=TRUE;
-    break;
-    case WIN10FCU:
-      *pdwSetCltProcTable=0x1BDBF;//SetCltProcTable
-      *pdwTlsOffset=0xD4854;//_dwTlsOffset
-      *pdwTlsIndex=0xB8370;//_dwTlsIndex
-      *bThisCall=TRUE;
-    break;
-    default://Incompatible Windows Version...
-    return FALSE;
-  }
-  return TRUE;
-}
-
-LPVOID WINAPI GetValueFromTeb(PTEB Teb,DWORD Index){
-  if(Index<TLS_MINIMUM_AVAILABLE)
-    return Teb->TlsSlots[Index];
-  if(Index>=TLS_EXPANSION_SLOTS+TLS_MINIMUM_AVAILABLE||!Teb->TlsExpansionSlots)
-    return NULL;
-  return Teb->TlsExpansionSlots[Index-TLS_MINIMUM_AVAILABLE];
 }
 
 BOOL WINAPI HookOpenGl(){
