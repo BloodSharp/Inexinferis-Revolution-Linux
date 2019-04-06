@@ -20,9 +20,9 @@
 #define FILE_UTIL_VECTOR_H
 
 // Misc C-runtime library headers
-#include "STDIO.H"
-#include "STDLIB.H"
-#include "MATH.H"
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
 
 // Header file containing definition of globalvars_t and entvars_t
 typedef int	func_t;					//
