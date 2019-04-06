@@ -1,48 +1,46 @@
 #ifndef NOPENGL_H
 #define NOPENGL_H
 
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
-typedef void (WINAPI *tglEnable)(GLenum);
-typedef void (WINAPI *tglDisable)(GLenum);
-typedef void (WINAPI *tglColor4f)(GLfloat,GLfloat,GLfloat,GLfloat);
-typedef void (WINAPI *tglGetFloatv)(GLenum,GLfloat *);
-typedef void (WINAPI *tglGetIntegerv)(GLenum,GLint *);
-typedef void (WINAPI *tglClearColor)(GLclampf,GLclampf,GLclampf,GLclampf);
-typedef void (WINAPI *tglTexEnvi)(GLenum,GLenum,GLenum);
-typedef void (WINAPI *tglBlendFunc)(GLenum,GLenum);
-typedef void (WINAPI *tglDepthRange)(GLclampd,GLclampd);
-typedef void (WINAPI *tglDepthFunc)(GLenum);
-typedef void (WINAPI *tglClear)(GLbitfield);
-//typedef void (WINAPI *tglVertex2f)(GLfloat x,GLfloat y);
-typedef void (WINAPI *tglVertex3f)(GLfloat,GLfloat,GLfloat);
-typedef void (WINAPI *tglVertex3fv)(const GLfloat *);
-typedef void (WINAPI *tglBegin)(GLenum);
-typedef void (WINAPI *tglEnd)();
-typedef void (WINAPI *tglPopMatrix)();
-typedef void (WINAPI *tglFrustum)(GLdouble,GLdouble,GLdouble,GLdouble,GLdouble,GLdouble);
-typedef void (WINAPI *tglReadBuffer)(GLenum);
-typedef void (WINAPI *tglReadPixels)(GLint,GLint,GLsizei,GLsizei,GLenum,GLenum,GLvoid*);
-typedef void (WINAPI *tglPolygonMode)(GLenum face,GLenum mode);
-typedef void (WINAPI *tglLineWidth)(GLfloat width);
-typedef void (WINAPI *tglColor3f)(GLfloat red,GLfloat green,GLfloat blue);
-typedef void (WINAPI *tglViewport)(GLint x,GLint y,GLsizei width,GLsizei height);
-typedef void (WINAPI *tglPopMatrix)();
-typedef void (WINAPI *twglSwapBuffers)(HDC hdc);
-typedef void (WINAPI *tglGenTextures)(GLsizei n,GLuint* textures);
-typedef void (WINAPI *tglBindTexture)(GLenum target,GLuint texture);
-typedef void (WINAPI *tglTexImage2D)(GLenum target,GLint level,GLint internalFormat,GLsizei width,GLsizei height,GLint border,GLenum format,GLenum type,const GLvoid * data);
-typedef void (WINAPI *tglTexParameteri)(GLenum target,GLenum pname,GLint param);
-typedef void (WINAPI *tglTexCoord2f)(GLfloat s,GLfloat t);
+__typeof__(glEnable)*pglEnable;
+__typeof__(glDisable)*pglDisable;
+__typeof__(glColor4f)*pglColor4f;
+__typeof__(glGetFloatv)*pglGetFloatv;
+__typeof__(glGetIntegerv)*pglGetIntegerv;
+__typeof__(glClearColor)*pglClearColor;
+__typeof__(glTexEnvi)*pglTexEnvi;
+__typeof__(glBlendFunc)*pglBlendFunc;
+__typeof__(glDepthRange)*pglDepthRange;
+__typeof__(glDepthFunc)*pglDepthFunc;
+__typeof__(glClear)*pglClear;
+//tglVertex2f pglVertex2f;
+__typeof__(glVertex3f)*pglVertex3f;
+__typeof__(glVertex3fv)*pglVertex3fv;
+__typeof__(glBegin)*pglBegin;
+__typeof__(glEnd)*pglEnd;
+__typeof__(glFrustum)*pglFrustum;
+__typeof__(glReadBuffer)*pglReadBuffer;
+__typeof__(glReadPixels)*pglReadPixels;
+__typeof__(glPolygonMode)*pglPolygonMode;
+__typeof__(glLineWidth)*pglLineWidth;
+__typeof__(glColor3f)*pglColor3f;
+__typeof__(glViewport)*pglViewport;
+__typeof__(glPopMatrix)*pglPopMatrix;
+__typeof__(glGenTextures)*pglGenTextures;
+__typeof__(glBindTexture)*pglBindTexture;
+__typeof__(glTexImage2D)*pglTexImage2D;
+__typeof__(glTexParameteri)*pglTexParameteri;
+__typeof__(glTexCoord2f)*pglTexCoord2f;
 
-//New OpenGL Functions
-typedef PROC (WINAPI *twglGetProcAddress)(LPCSTR lpszProc);
-typedef GLvoid (WINAPI *tglBindBuffer)(GLenum target, GLuint buffer);
-typedef GLvoid* (WINAPI *tglMapBuffer)(GLenum target, GLenum access);
-typedef GLboolean (WINAPI *tglUnmapBuffer)(GLenum target);
-typedef void (WINAPI *tglGenBuffers)(GLsizei n,GLuint * buffers);
-typedef void (WINAPI *tglBufferData)(GLenum target,GLsizei size,const GLvoid * data,GLenum usage);
+/New OpenGL Functions
+//__typeof__(pwglGetProcAddress;
+__typeof__(glBindBuffer)*pglBindBuffer;
+__typeof__(glMapBuffer)*pglMapBuffer;
+__typeof__(glUnmapBuffer)*pglUnmapBuffer;
+__typeof__(glGenBuffers)*pglGenBuffers;
+__typeof__(glBufferData)*pglBufferData;
 
 typedef int (WINAPI *tSetCltProcTable)(PDWORD pDst1,PDWORD pDst2,DWORD iSize);
 

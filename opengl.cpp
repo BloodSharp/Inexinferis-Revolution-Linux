@@ -7,43 +7,43 @@
 #include "utils.h"
 #include "cvar.h"
 
-tglEnable pglEnable=NULL;
-tglDisable pglDisable=NULL;
-tglColor4f pglColor4f=NULL;
-tglGetFloatv pglGetFloatv=NULL;
-tglGetIntegerv pglGetIntegerv=NULL;
-tglClearColor pglClearColor=NULL;
-tglTexEnvi pglTexEnvi=NULL;
-tglBlendFunc pglBlendFunc=NULL;
-tglDepthRange pglDepthRange=NULL;
-tglDepthFunc pglDepthFunc=NULL;
-tglClear pglClear=NULL;
+__typeof__(glEnable)*pglEnable=NULL;
+__typeof__(glDisable)*pglDisable=NULL;
+__typeof__(glColor4f)*pglColor4f=NULL;
+__typeof__(glGetFloatv)*pglGetFloatv=NULL;
+__typeof__(glGetIntegerv)*pglGetIntegerv=NULL;
+__typeof__(glClearColor)*pglClearColor=NULL;
+__typeof__(glTexEnvi)*pglTexEnvi=NULL;
+__typeof__(glBlendFunc)*pglBlendFunc=NULL;
+__typeof__(glDepthRange)*pglDepthRange=NULL;
+__typeof__(glDepthFunc)*pglDepthFunc=NULL;
+__typeof__(glClear)*pglClear=NULL;
 //tglVertex2f pglVertex2f=NULL;
-tglVertex3f pglVertex3f=NULL;
-tglVertex3fv pglVertex3fv=NULL;
-tglBegin pglBegin=NULL;
-tglEnd pglEnd=NULL;
-tglFrustum pglFrustum=NULL;
-tglReadBuffer pglReadBuffer=NULL;
-tglReadPixels pglReadPixels=NULL;
-tglPolygonMode pglPolygonMode=NULL;
-tglLineWidth pglLineWidth=NULL;
-tglColor3f pglColor3f=NULL;
-tglViewport pglViewport=NULL;
-tglPopMatrix pglPopMatrix=NULL;
-tglGenTextures pglGenTextures=NULL;
-tglBindTexture pglBindTexture=NULL;
-tglTexImage2D pglTexImage2D=NULL;
-tglTexParameteri pglTexParameteri=NULL;
-tglTexCoord2f pglTexCoord2f=NULL;
+__typeof__(glVertex3f)*pglVertex3f=NULL;
+__typeof__(glVertex3fv)*pglVertex3fv=NULL;
+__typeof__(glBegin)*pglBegin=NULL;
+__typeof__(glEnd)*pglEnd=NULL;
+__typeof__(glFrustum)*pglFrustum=NULL;
+__typeof__(glReadBuffer)*pglReadBuffer=NULL;
+__typeof__(glReadPixels)*pglReadPixels=NULL;
+__typeof__(glPolygonMode)*pglPolygonMode=NULL;
+__typeof__(glLineWidth)*pglLineWidth=NULL;
+__typeof__(glColor3f)*pglColor3f=NULL;
+__typeof__(glViewport)*pglViewport=NULL;
+__typeof__(glPopMatrix)*pglPopMatrix=NULL;
+__typeof__(glGenTextures)*pglGenTextures=NULL;
+__typeof__(glBindTexture)*pglBindTexture=NULL;
+__typeof__(glTexImage2D)*pglTexImage2D=NULL;
+__typeof__(glTexParameteri)*pglTexParameteri=NULL;
+__typeof__(glTexCoord2f)*pglTexCoord2f=NULL;
 
 //New OpenGL Functions
-twglGetProcAddress pwglGetProcAddress=NULL;
-tglBindBuffer pglBindBuffer=NULL;
-tglMapBuffer pglMapBuffer=NULL;
-tglUnmapBuffer pglUnmapBuffer=NULL;
-tglGenBuffers pglGenBuffers=NULL;
-tglBufferData pglBufferData=NULL;
+//__typeof__(pwglGetProcAddress=NULL;
+__typeof__(glBindBuffer)*pglBindBuffer=NULL;
+__typeof__(glMapBuffer)*pglMapBuffer=NULL;
+__typeof__(glUnmapBuffer)*pglUnmapBuffer=NULL;
+__typeof__(glGenBuffers)*pglGenBuffers=NULL;
+__typeof__(glBufferData)*pglBufferData=NULL;
 
 HMODULE hOpengl32=NULL;
 
