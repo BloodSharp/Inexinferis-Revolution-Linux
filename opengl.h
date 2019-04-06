@@ -34,7 +34,7 @@ __typeof__(glTexImage2D)*pglTexImage2D;
 __typeof__(glTexParameteri)*pglTexParameteri;
 __typeof__(glTexCoord2f)*pglTexCoord2f;
 
-/New OpenGL Functions
+//New OpenGL Functions
 //__typeof__(pwglGetProcAddress;
 __typeof__(glBindBuffer)*pglBindBuffer;
 __typeof__(glMapBuffer)*pglMapBuffer;
