@@ -48,43 +48,6 @@ BOOL WINAPI HookOpenGl();
 void WINAPI glCreateTextureBuffer(GLint width,GLint height,GLvoid* data);
 void WINAPI glDrawTexture(GLint x,GLint y,GLint width,GLint height);
 
-extern tglDepthRange pglDepthRange;
-extern tglDepthFunc pglDepthFunc;
-extern tglTexEnvi pglTexEnvi;
-extern tglEnable pglEnable;
-extern tglDisable pglDisable;
-extern tglColor4f pglColor4f;
-extern tglGetFloatv pglGetFloatv;
-extern tglGetIntegerv pglGetIntegerv;
-extern tglClearColor pglClearColor;
-extern tglBlendFunc pglBlendFunc;
-extern tglClear pglClear;
-//extern tglVertex2f pglVertex2f;
-extern tglVertex3f pglVertex3f;
-extern tglVertex3fv pglVertex3fv;
-extern tglBegin pglBegin;
-extern tglEnd pglEnd;
-extern tglFrustum pglFrustum;
-extern tglReadBuffer pglReadBuffer;
-extern tglReadPixels pglReadPixels;
-extern tglPolygonMode pglPolygonMode;
-extern tglLineWidth pglLineWidth;
-extern tglColor3f pglColor3f;
-extern tglViewport pglViewport;
-extern tglGenTextures pglGenTextures;
-extern tglBindTexture pglBindTexture;
-extern tglTexImage2D pglTexImage2D;
-extern tglTexParameteri pglTexParameteri;
-extern tglTexCoord2f pglTexCoord2f;
-
-//New OpenGL Functions
-extern twglGetProcAddress pwglGetProcAddress;
-extern tglBindBuffer pglBindBuffer;
-extern tglMapBuffer pglMapBuffer;
-extern tglUnmapBuffer pglUnmapBuffer;
-extern tglGenBuffers pglGenBuffers;
-extern tglBufferData pglBufferData;
-
 extern bool oglSubtractive;
 extern bool oglChams;
 extern float oglChamsColor[3];
