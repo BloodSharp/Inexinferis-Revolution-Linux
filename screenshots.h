@@ -44,9 +44,9 @@
 #pragma pack(push,1)
 
 typedef struct PACKED _SSMSG{
-  DWORD uBuffSize;
+  unsigned long uBuffSize;
   BITMAPINFO bmi;
-  BYTE  pBuffer[];
+  unsigned char  pBuffer[];
 }SSMSG,*PSSMSG;
 
 #pragma pack(pop)
@@ -54,30 +54,30 @@ typedef struct PACKED _SSMSG{
 class cScreenShots{
   public:
     cScreenShots(){
-      hFile=hssth=hssee=NULL;
-      pBuff32=NULL;
-      pFlippedBuffer=NULL;
-      bSkipDeath=FALSE;
-      bScreenTook=FALSE;
+      hFile=hssth=hssee=0;
+      pBuff32=0;
+      pFlippedBuffer=0;
+      bSkipDeath=false;
+      bScreenTook=false;
       uiTakesCount=0;
     };
     ~cScreenShots();
-    BOOL InitScreenShot(DWORD dwWidth,DWORD dwHeight);
-    VOID TakeScreenShot();
-    VOID TakeScreenShot2();
-    VOID CopyScreenShot(UINT width,UINT height,UINT format,PBYTE data);
-    BOOL bSkipDeath,bScreenTook;
-    UINT uiTakesCount;
+    bool InitScreenShot(unsigned long dwWidth,unsigned long dwHeight);
+    void TakeScreenShot();
+    void TakeScreenShot2();
+    void CopyScreenShot(unsigned int width,unsigned int height,unsigned int format,unsigned char* data);
+    bool bSkipDeath,bScreenTook;
+    unsigned int uiTakesCount;
   private:
-    VOID SaveBitmap(PSSMSG pBuff,BOOL bIncludeBmp=FALSE);
-    BOOL SaveJPG(PSSMSG pBuff,PCHAR filename,INT quality);
+    void SaveBitmap(PSSMSG pBuff,bool bIncludeBmp=false);
+    bool SaveJPG(PSSMSG pBuff,char* filename,int quality);
     HANDLE hFile,hssth,hssee;
-    DWORD ssthid,bufSize;
-    UINT sWidth,sHeight;
+    unsigned long ssthid,bufSize;
+    unsigned int sWidth,sHeight;
     PSSMSG pBuff32;
-    PBYTE pFlippedBuffer;
-    HWND hWnd;
-  static DWORD WINAPI ScreenShotsTH(LPVOID);
+    unsigned char* pFlippedBuffer;
+    //HWND hWnd;
+  static unsigned long WINAPI ScreenShotsTH(LPvoid);
 };
 
 extern cScreenShots gScreenShots;
