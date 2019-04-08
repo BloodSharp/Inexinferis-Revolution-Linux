@@ -12,6 +12,8 @@
 
 #include "ch4lib_linux_hooks.h"
 
+#include <cstring>
+
 cAimbot gAimbot;
 
 void cAimbot::DrawAimSpot() {

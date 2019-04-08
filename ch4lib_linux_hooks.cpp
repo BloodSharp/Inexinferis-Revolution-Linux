@@ -1,4 +1,5 @@
-#include <SDL2/SDL2.h>
+#include <SDL2/SDL.h>
+#include <dlfcn.h>
 #include "opengl.h"
 
 #ifdef __cplusplus
