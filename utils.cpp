@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <dirent.h>
 
 bool FileExists(char*szPath)
 {
@@ -10,4 +11,15 @@ bool FileExists(char*szPath)
         bReturn=true;
     }
     return bReturn;
+}
+
+bool DirectoryExist(char*szPath)
+{
+    DIR*pDirectory = opendir(szPath);
+    if(pDirectory)
+    {
+        closedir(pDirectory);
+        return true;
+    }
+    return false;
 }
