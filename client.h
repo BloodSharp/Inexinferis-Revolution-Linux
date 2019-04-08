@@ -46,7 +46,7 @@ extern int (*pStudioCheckBBox)(void);
 extern void (*pStudioEntityLight)(struct alight_s *plight);
 
 extern double serverTime;
-extern UINT drawingCam;
+extern unsigned int drawingCam;
 extern pfnUserMsgHook pResetHUD,pTeamInfo,pCurWeapon,pScoreAttrib,pSetFOV,
 pHealth,pBattery,pScoreInfo,pDeathMsg,pSayText,pDamage,//pTextMsg,
 pAmmoX,pMoney,pWeaponList,pRadar,pFog;
@@ -94,8 +94,8 @@ extern usermsglist_t** pUserMsgList;
 extern srvcmdlist_t** pSrvCmdList;
 
 //VOID HookClientCmds();
-VOID HookEvents();
-VOID HookUserMsgs();
-VOID HookSrvCmds();
+void HookEvents();
+void HookUserMsgs();
+void HookSrvCmds();
 
 #endif //ENGINE_H

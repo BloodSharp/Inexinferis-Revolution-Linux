@@ -34,7 +34,7 @@ float gSpeed=0.0;
 double serverTime=0.0;
 bool bFlipFlop=true,bMidMenu=true,bShouldShoot=false,bShouldWait=false,bFirtsShoot=true,bFalling=false;
 bool bzoomdisabled=false,bEngRadar=-1;
-UINT gzoom=1,iLastFOV=90,display=0,drawingCam=0,bClean=0,iNeedBuy=0;
+unsigned int gzoom=1,iLastFOV=90,display=0,drawingCam=0,bClean=0,iNeedBuy=0;
 
 int (*pStudioDrawPlayer)(int flags,entity_state_s *pplayer);
 int (*pStudioDrawModel)(int flags);
@@ -1503,7 +1503,7 @@ pfnSrvCmd HookSrvCmd(const char *name,pfnSrvCmd pfn) {
 
 //==================================================================================
 
-VOID HookEvents() {
+void HookEvents() {
   if(pEventList) {
     pEvent_usp=HookEvent("events/usp.sc",Event_usp);
     pEvent_mp5n=HookEvent("events/mp5n.sc",Event_mp5n);
@@ -1534,7 +1534,7 @@ VOID HookEvents() {
   }
 }
 
-VOID HookUserMsgs() {
+void HookUserMsgs() {
   if(pUserMsgList) {
     pResetHUD=HookUserMsg("ResetHUD",ResetHUD);
     pTeamInfo=HookUserMsg("TeamInfo",TeamInfo);
@@ -1560,7 +1560,7 @@ VOID HookUserMsgs() {
   }
 }
 
-VOID HookSrvCmds() {
+void HookSrvCmds() {
   if(pSrvCmdList) {
     pConnect=HookSrvCmd("connect",connectcmd);
     pMotdWrite=HookSrvCmd("motd_write",motd_writecmd);
