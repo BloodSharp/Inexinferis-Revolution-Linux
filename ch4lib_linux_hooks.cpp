@@ -14,129 +14,44 @@ __typeof__(SDL_GL_GetProcAddress)*pOrig_SDL_GL_GetProcAddress=0;
 
 HOOKED_EXPORT void*SDL_GL_GetProcAddress(const char*proc)
 {
+    static bool bOpenGLPointers=false;
+
     while(!pOrig_SDL_GL_GetProcAddress)
     {
         puts("[B#] SDL_GL_GetProcAddress!");
-        pOrig_SDL_GL_GetProcAddress=(__typeof__(SDL_GL_GetProcAddress)*)ssltrace_dlsym("SDL_GL_GetProcAddress");
+        pOrig_SDL_GL_GetProcAddress=(__typeof__(SDL_GL_GetProcAddress)*)dlsym(dlopen("./libSDL2.so",RTLD_NOW),"SDL_GL_GetProcAddress");
     }
 
-    // Non-hooked GL!
-    if(!strcmp(proc,"glGetFloatv"))
+    if(!bOpenGLPointers && pOrig_SDL_GL_GetProcAddress)
     {
-        pglGetFloatv=(__typeof__(glGetFloatv)*)=pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglGetFloatv;
-    }
-    else if(!strcmp(proc,"glGetIntegerv"))
-    {
-        pglGetIntegerv=(__typeof__(glGetIntegerv)*)=pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglGetIntegerv;
-    }
-    else if(!strcmp(proc,"glClearColor"))
-    {
-        pglClearColor=(__typeof__(glClearColor)*)=pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglClearColor;
-    }
-    else if(!strcmp(proc,"glTexEnvi"))
-    {
-        pglTexEnvi=(__typeof__(glTexEnvi)*)=pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglTexEnvi;
-    }
-    else if(!strcmp(proc,"glDepthRange"))
-    {
-        pglDepthRange=(__typeof__(glDepthRange)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglDepthRange;
-    }
-    else if(!strcmp(proc,"glDepthFunc"))
-    {
-        pglDepthFunc=(__typeof__(glDepthFunc)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglDepthFunc;
-    }
-    else if(!strcmp(proc,"glVertex3f"))
-    {
-        pglVertex3f=(__typeof__(glVertex3f)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglVertex3f;
-    }
-    else if(!strcmp(proc,"glEnd"))
-    {
-        pglEnd=(__typeof__(glEnd)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglEnd;
-    }
-    else if(!strcmp(proc,"pglReadBuffer"))
-    {
-        pglReadBuffer=(__typeof__(glReadBuffer)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglReadBuffer;
-    }
-    else if(!strcmp(proc,"glPolygonMode"))
-    {
-        pglPolygonMode=(__typeof__(glPolygonMode)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglPolygonMode;
-    }
-    else if(!strcmp(proc,"glLineWidth"))
-    {
-        pglLineWidth=(__typeof__(glLineWidth)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglLineWidth;
-    }
-    else if(!strcmp(proc,"glColor3f"))
-    {
-        pglColor3f=(__typeof__(glColor3f)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglColor3f;
-    }
-    else if(!strcmp(proc,"glPopMatrix"))
-    {
-        pglPopMatrix=(__typeof__(glPopMatrix)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglPopMatrix;
-    }
-    else if(!strcmp(proc,"glGenTextures"))
-    {
-        pglGenTextures=(__typeof__(glGenTextures)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglGenTextures;
-    }
-    else if(!strcmp(proc,"glBindTexture"))
-    {
-        pglBindTexture=(__typeof__(glBindTexture)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglBindTexture;
-    }
-    else if(!strcmp(proc,"glTexImage2D"))
-    {
-        pglTexImage2D=(__typeof__(glTexImage2D)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglTexImage2D;
-    }
-    else if(!strcmp(proc,"glTexParameteri"))
-    {
-        pglTexParameteri=(__typeof__(glTexParameteri)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglTexParameteri;
-    }
-    else if(!strcmp(proc,"glTexCoord2f"))
-    {
-        pglTexCoord2f=(__typeof__(glTexCoord2f)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglTexCoord2f;
-    }
+        // Non-hooked GL!
+        pglGetFloatv=(__typeof__(glGetFloatv)*)=pOrig_SDL_GL_GetProcAddress("glGetFloatv");
+        pglGetIntegerv=(__typeof__(glGetIntegerv)*)=pOrig_SDL_GL_GetProcAddress("glGetIntegerv");
+        pglClearColor=(__typeof__(glClearColor)*)=pOrig_SDL_GL_GetProcAddress("glClearColor");
+        pglTexEnvi=(__typeof__(glTexEnvi)*)=pOrig_SDL_GL_GetProcAddress("glTexEnvi");
+        pglDepthRange=(__typeof__(glDepthRange)*)pOrig_SDL_GL_GetProcAddress("glDepthRange");
+        pglDepthFunc=(__typeof__(glDepthFunc)*)pOrig_SDL_GL_GetProcAddress("glDepthFunc");
+        pglVertex3f=(__typeof__(glVertex3f)*)pOrig_SDL_GL_GetProcAddress("glVertex3f");
+        pglEnd=(__typeof__(glEnd)*)pOrig_SDL_GL_GetProcAddress("glEnd");
+        pglReadBuffer=(__typeof__(glReadBuffer)*)pOrig_SDL_GL_GetProcAddress("glReadBuffer");
+        pglPolygonMode=(__typeof__(glPolygonMode)*)pOrig_SDL_GL_GetProcAddress("glPolygonMode");
+        pglLineWidth=(__typeof__(glLineWidth)*)pOrig_SDL_GL_GetProcAddress("glLineWidth");
+        pglColor3f=(__typeof__(glColor3f)*)pOrig_SDL_GL_GetProcAddress("glColor3f");
+        pglPopMatrix=(__typeof__(glPopMatrix)*)pOrig_SDL_GL_GetProcAddress("glPopMatrix");
+        pglGenTextures=(__typeof__(glGenTextures)*)pOrig_SDL_GL_GetProcAddress("glGenTextures");
+        pglBindTexture=(__typeof__(glBindTexture)*)pOrig_SDL_GL_GetProcAddress("glBindTexture");
+        pglTexImage2D=(__typeof__(glTexImage2D)*)pOrig_SDL_GL_GetProcAddress("glTexImage2D");
+        pglTexParameteri=(__typeof__(glTexParameteri)*)pOrig_SDL_GL_GetProcAddress("glTexParameteri");
+        pglTexCoord2f=(__typeof__(glTexCoord2f)*)pOrig_SDL_GL_GetProcAddress("glTexCoord2f");
 
-    //New OpenGL Functions !VERIFICAR!
-    else if(!strcmp(proc,"glBindBuffer"))
-    {
-        pglBindBuffer=(__typeof__(glBindBuffer)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglBindBuffer;
-    }
-    else if(!strcmp(proc,"glMapBuffer"))
-    {
-        pglMapBuffer=(__typeof__(glMapBuffer)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglMapBuffer;
-    }
-    else if(!strcmp(proc,"glUnmapBuffer"))
-    {
-        pglUnmapBuffer=(__typeof__(glUnmapBuffer)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglUnmapBuffer;
-    }
-    else if(!strcmp(proc,"pglGenBuffers"))
-    {
-        pglGenBuffers=(__typeof__(glGenBuffers)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglGenBuffers;
-    }
-    else if(!strcmp(proc,"glBufferData"))
-    {
-        pglBufferData=(__typeof__(glBufferData)*)pOrig_SDL_GL_GetProcAddress(proc);
-        return(void*)pglBufferData;
+        //New OpenGL Functions
+        pglBindBuffer=(__typeof__(glBindBuffer)*)pOrig_SDL_GL_GetProcAddress("glBindBuffer");
+        pglMapBuffer=(__typeof__(glMapBuffer)*)pOrig_SDL_GL_GetProcAddress("glMapBuffer");
+        pglUnmapBuffer=(__typeof__(glUnmapBuffer)*)pOrig_SDL_GL_GetProcAddress("glUnmapBuffer");
+        pglGenBuffers=(__typeof__(glGenBuffers)*)pOrig_SDL_GL_GetProcAddress("glGenBuffers");
+        pglBufferData=(__typeof__(glBufferData)*)pOrig_SDL_GL_GetProcAddress("glBufferData");
+
+        bOpenGLPointers=true;
     }
 
     // Hooked GL!
