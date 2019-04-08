@@ -30,10 +30,10 @@ HOOKED_EXPORT void*SDL_GL_GetProcAddress(const char*proc)
     if(!bOpenGLPointers && pOrig_SDL_GL_GetProcAddress)
     {
         // Non-hooked GL!
-        pglGetFloatv=(__typeof__(glGetFloatv)*)=pOrig_SDL_GL_GetProcAddress("glGetFloatv");
-        pglGetIntegerv=(__typeof__(glGetIntegerv)*)=pOrig_SDL_GL_GetProcAddress("glGetIntegerv");
-        pglClearColor=(__typeof__(glClearColor)*)=pOrig_SDL_GL_GetProcAddress("glClearColor");
-        pglTexEnvi=(__typeof__(glTexEnvi)*)=pOrig_SDL_GL_GetProcAddress("glTexEnvi");
+        pglGetFloatv=(__typeof__(glGetFloatv)*)pOrig_SDL_GL_GetProcAddress("glGetFloatv");
+        pglGetIntegerv=(__typeof__(glGetIntegerv)*)pOrig_SDL_GL_GetProcAddress("glGetIntegerv");
+        pglClearColor=(__typeof__(glClearColor)*)pOrig_SDL_GL_GetProcAddress("glClearColor");
+        pglTexEnvi=(__typeof__(glTexEnvi)*)pOrig_SDL_GL_GetProcAddress("glTexEnvi");
         pglDepthRange=(__typeof__(glDepthRange)*)pOrig_SDL_GL_GetProcAddress("glDepthRange");
         pglDepthFunc=(__typeof__(glDepthFunc)*)pOrig_SDL_GL_GetProcAddress("glDepthFunc");
         pglVertex3f=(__typeof__(glVertex3f)*)pOrig_SDL_GL_GetProcAddress("glVertex3f");
@@ -119,7 +119,7 @@ HOOKED_EXPORT int SDL_PollEvent(SDL_Event*event)
     while(!pOrig_SDL_PollEvent)
     {
         puts("[B#] SDL_PollEvent!");
-        pOrig_SDL_PollEvent=(typeof(SDL_PollEvent)*)dlsym(dlopen("./libSDL2.so",RTLD_NOW),"SDL_PollEvent");
+        pOrig_SDL_PollEvent=(__typeof__(SDL_PollEvent)*)dlsym(dlopen("./libSDL2.so",RTLD_NOW),"SDL_PollEvent");
     }
     int iReturn=pOrig_SDL_PollEvent(event);
     if(event->type==SDL_KEYDOWN&&event->key.keysym.scancode==SDL_SCANCODE_LSHIFT)
