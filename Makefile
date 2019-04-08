@@ -23,7 +23,7 @@ OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(OBJ_PATH)/%.o)
 DEPS = $(OBJECTS:.o=.d)
 
 # flags #
-COMPILE_FLAGS = -std=c++11 -Wall -Wextra -g -fpermissive -fvisibility=hidden -m32
+COMPILE_FLAGS = -std=gnu++11 -Wextra -g -fpermissive -fvisibility=hidden -m32
 INCLUDES = -I include/ -I /usr/local/include
 # Space-separated pkg-config libraries used by this project
 LIBS = -lSDL2
