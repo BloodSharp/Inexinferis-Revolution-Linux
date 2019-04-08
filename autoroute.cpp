@@ -1,3 +1,4 @@
+#include <cstring>
 #include <fstream>
 #include "client.h"
 #include "autoroute.h"
