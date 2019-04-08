@@ -10,6 +10,8 @@
 #include "opengl.h"
 #include <time.h>
 
+#include "ch4lib_linux_hooks.h"
+
 cAimbot gAimbot;
 
 void cAimbot::DrawAimSpot() {
@@ -632,7 +634,7 @@ void cAimbot::FixupAngleDifference(usercmd_t *cmd) {
   else
     gEngfuncs.pfnAngleVectors(usercmd.viewangles,viewforward,viewright,viewup);
 
-  if(gMe.ent->curstate.movetype==MOVETYPE_WALK&&!GetAsyncKeyState(VK_LSHIFT)&&!(cmd->buttons&IN_ATTACK)&&!(cmd->buttons&IN_USE)) {
+  if(gMe.ent->curstate.movetype==MOVETYPE_WALK&&!bVK_LSHIFT&&!(cmd->buttons&IN_ATTACK)&&!(cmd->buttons&IN_USE)) {
     fTime=gEngfuncs.GetClientTime();
     cmd->viewangles.y=fmod(fTime*SPIN_REVS_PER_SECOND*360.0f, 360.0f);
   }
@@ -663,7 +665,7 @@ void cAimbot::ApplySilentAngles(float *angles,usercmd_s *cmd) {
   else
     gEngfuncs.pfnAngleVectors(cmd->viewangles,viewforward,viewright,viewup);
 
-  if(gMe.ent->curstate.movetype==MOVETYPE_WALK&&!GetAsyncKeyState(VK_LSHIFT)&&!(gMe.pmMoveType==5)) {
+  if(gMe.ent->curstate.movetype==MOVETYPE_WALK&&!bVK_LSHIFT&&!(gMe.pmMoveType==5)) {
     cmd->viewangles.x=angles[0];
     cmd->viewangles.y=angles[1];
   }

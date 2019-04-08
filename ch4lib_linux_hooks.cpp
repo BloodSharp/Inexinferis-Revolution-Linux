@@ -7,10 +7,14 @@
 #define HOOKED_EXPORT __attribute__ ((visibility ("default")))
 #endif // __cplusplus
 
+bool bVK_LSHIFT=false;
+
 //Hooked
 HOOKED_EXPORT void*SDL_GL_GetProcAddress(const char*proc);
+HOOKED_EXPORT int SDL_PollEvent(SDL_Event*event);
 
 __typeof__(SDL_GL_GetProcAddress)*pOrig_SDL_GL_GetProcAddress=0;
+__typeof__(SDL_PollEvent)*pOrig_SDL_PollEvent=0;
 
 HOOKED_EXPORT void*SDL_GL_GetProcAddress(const char*proc)
 {
@@ -107,4 +111,19 @@ HOOKED_EXPORT void*SDL_GL_GetProcAddress(const char*proc)
     }
 
     return pOrig_SDL_GL_GetProcAddress(proc);
+}
+
+HOOKED_EXPORT int SDL_PollEvent(SDL_Event*event)
+{
+    while(!pOrig_SDL_PollEvent)
+    {
+        puts("[B#] SDL_PollEvent!");
+        pOrig_SDL_PollEvent=(typeof(SDL_PollEvent)*)dlsym(dlopen("./libSDL2.so",RTLD_NOW),"SDL_PollEvent");
+    }
+    int iReturn=pOrig_SDL_PollEvent(event);
+    if(event->type==SDL_KEYDOWN&&event->key.keysym.scancode==SDL_SCANCODE_LSHIFT)
+        bVK_LSHIFT=true;
+    else if(event->type==SDL_KEYUP&&event->key.keysym.scancode==SDL_SCANCODE_LSHIFT)
+        bVK_LSHIFT=false;
+    return iReturn;
 }
