@@ -46,14 +46,12 @@ __typeof__(glGenBuffers)*pglGenBuffers=NULL;
 __typeof__(glBufferData)*pglBufferData=NULL;
 
 
-HMODULE hOpengl32=NULL;
-
 bool bSkyTex=false,bSmoke=false,bTex=false,oglSubtractive=false,oglChams=false;//,bFlash=false;
 float oglChamsColor[3];
 
 GLuint textureID=0;
 
-BOOL CheckFuncs(){
+bool CheckFuncs(){
   static bool bCheckOK=FALSE;
   if(!bCheckOK)
     bCheckOK=(pglEnable&&pglDisable&&pglColor4f&&pglGetFloatv&&pglGetIntegerv&&pglClearColor&&pglTexEnvi&&pglBlendFunc&&pglDepthRange&&pglDepthFunc&&pglClear&&
@@ -155,8 +153,6 @@ void APIENTRY hglBegin(GLenum mode){
     }
   }
   pglBegin(mode);
-  //Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }
 
 void APIENTRY hglClear(GLbitfield mask){
@@ -175,8 +171,6 @@ void APIENTRY hglClear(GLbitfield mask){
 		}
 	}
 	pglClear(mask);
-	//Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }
 
 void APIENTRY hglVertex3fv(const GLfloat *v){
@@ -184,30 +178,22 @@ void APIENTRY hglVertex3fv(const GLfloat *v){
      ((cvar.nosmoke&&bSmoke)||(bSkyTex&&(cvar.nosky||cvar.wallhack==2))))
     return;
   pglVertex3fv(v);
-  //Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }
 
 /*void WINAPI hglVertex2f(GLfloat x,GLfloat y){
   if(cvar.active&&!cvar.takingss&&cvar.noflash&&bFlash&&x==0.0&&y==0.0)
     pglColor4f(1.0f,1.0f,1.0f,0.1f);
   pglVertex2f(x,y);
-  //Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }*/
 
 void APIENTRY hglEnable(GLenum mode){
   if(mode==GL_TEXTURE_2D)bTex=true;
   pglEnable(mode);
-  //Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }
 
 void APIENTRY hglDisable(GLenum mode){
   if(mode==GL_TEXTURE_2D)bTex=false;
   pglDisable(mode);
-  //Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }
 
 //Cam zoom
@@ -220,8 +206,6 @@ void APIENTRY hglFrustum(GLdouble left,GLdouble right,GLdouble bottom,GLdouble t
 		right=top*4/3;
 	}
   pglFrustum(left,right,bottom,top,zNear,zFar);
-  //Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }
 
 //1.5 tint func!
@@ -250,8 +234,6 @@ void APIENTRY hglBlendFunc(GLenum sfactor,GLenum dfactor){
     pglBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	else
     pglBlendFunc(sfactor,dfactor);
-  //Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }
 
 void APIENTRY hglColor4f(GLfloat red,GLfloat green,GLfloat blue,GLfloat alpha){
@@ -262,8 +244,6 @@ void APIENTRY hglColor4f(GLfloat red,GLfloat green,GLfloat blue,GLfloat alpha){
     alpha=1.0;
   }
   pglColor4f(red,green,blue,alpha);
-  //Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }
 
 //SmallView
@@ -276,8 +256,6 @@ void APIENTRY hglViewport(GLint x,GLint y,GLsizei width,GLsizei height){
 		(bSmall?200:width),
 		(bSmall?150:height)
 	);
-	//Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }
 
 //UCP/SXE Screenshot
@@ -286,15 +264,13 @@ void APIENTRY hglReadPixels(GLint x,GLint	y,GLsizei	width,GLsizei	height,GLenum 
     gScreenShots.CopyScreenShot(width,height,format,(PBYTE)data);
   else
     pglReadPixels(x,y,width,height,format,type,data);
-  //Update TIB Hook
-  DoTIBHook(dwFSBase,dwFSBase2);
 }
 
 void APIENTRY glCreateTextureBuffer(GLint width,GLint height,GLvoid* data){
-  static BOOL bInit=FALSE;
+  static bool bInit=false;
   if(!bInit){
     pglGenTextures(1,&textureID);
-    bInit=TRUE;
+    bInit=true;
   }
   if(pglBindTexture)
     pglBindTexture(GL_TEXTURE_2D,textureID);
