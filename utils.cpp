@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <dirent.h>
+#include <sys/stat.h>
 
 bool FileExists(char*szPath)
 {
@@ -22,4 +23,12 @@ bool DirectoryExist(char*szPath)
         return true;
     }
     return false;
+}
+
+void CreateDirectory(char*szPath)
+{
+    mkdir(szPath,S_IRWXU //Me
+                |S_IRGRP|S_IWGRP //GROUP_MAX
+                |S_IROTH|S_IWOTH //Others
+                );
 }

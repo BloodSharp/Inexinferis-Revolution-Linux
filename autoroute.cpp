@@ -198,7 +198,7 @@ void cAutoRute::Save() {
   int i,j;
   // check directory
   if(!DirectoryExist(waypath)) {
-    CreateDirectory(waypath,NULL);
+    CreateDirectory(waypath);
     return;
   }
   //save
