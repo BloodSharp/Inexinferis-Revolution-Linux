@@ -580,9 +580,9 @@ bool cAimbot::FindVisibleSpot(cPlayer &player){
   if(closest){
     player.vOffsets=*closest-player.ent->origin;
     player.bGotAnyVisiblePart=true;
-    return TRUE;
+    return true;
   }
-  return FALSE;
+  return false;
 }
 
 void cAimbot::CalcFovAndVisibility(cPlayer &player) {
