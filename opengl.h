@@ -4,6 +4,13 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+//New OpenGL Functions
+GLvoid APIENTRY glBindBuffer(GLenum target, GLuint buffer);
+GLvoid * APIENTRY glMapBuffer(GLenum target, GLenum access);
+GLboolean APIENTRY glUnmapBuffer(GLenum target);
+void APIENTRY glGenBuffers(GLsizei n,GLuint * buffers);
+void APIENTRY glBufferData(GLenum target,GLsizei size,const GLvoid * data,GLenum usage);
+
 __typeof__(glEnable)*pglEnable;
 __typeof__(glDisable)*pglDisable;
 __typeof__(glColor4f)*pglColor4f;
@@ -35,7 +42,6 @@ __typeof__(glTexParameteri)*pglTexParameteri;
 __typeof__(glTexCoord2f)*pglTexCoord2f;
 
 //New OpenGL Functions
-//__typeof__(pwglGetProcAddress;
 __typeof__(glBindBuffer)*pglBindBuffer;
 __typeof__(glMapBuffer)*pglMapBuffer;
 __typeof__(glUnmapBuffer)*pglUnmapBuffer;
