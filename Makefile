@@ -23,10 +23,10 @@ OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(OBJ_PATH)/%.o)
 DEPS = $(OBJECTS:.o=.d)
 
 # flags #
-COMPILE_FLAGS = -Wall -Wextra -g -fpermissive -fvisibility=hidden
+COMPILE_FLAGS = -Wall -Wextra -g -fpermissive -fvisibility=hidden -m32
 INCLUDES = -I include/ -I /usr/local/include
 # Space-separated pkg-config libraries used by this project
-LIBS =
+LIBS = -lSDL2
 
 .PHONY: default_target
 default_target: release
@@ -60,7 +60,7 @@ all: $(BIN_PATH)/$(BIN_NAME)
 # Creation of the executable
 $(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
 	@echo "Linking: $@"
-	$(CXX) $(OBJECTS) -shared -o $@
+	$(CXX) $(OBJECTS) $(LIBS) -shared -o $@
 
 # Add dependency files, if they exist
 -include $(DEPS)
