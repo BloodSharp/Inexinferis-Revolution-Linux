@@ -135,6 +135,146 @@ HOOKED_EXPORT int SDL_PollEvent(SDL_Event*event)
     return iReturn;
 }
 
+void*LinuxVirtualProtect(void*address,size_t size,int protections)
+{
+    long pagesize;
+    pagesize=sysconf(_SC_PAGESIZE);
+    address=(void*)((long)address&~(pagesize-1));
+    if(mprotect(address,size,protections)==0)
+        return address;
+    return 0;
+}
+
+void*fake_malloc(size_t size)
+{
+    void *retadd=mmap(0,size,PROT_READ|PROT_WRITE|PROT_EXEC,MAP_ANON|MAP_PRIVATE,-1,0);
+    if(retadd==MAP_FAILED)
+        return 0;
+    return retadd;
+}
+
+void*DetourFunction(unsigned char*orig,unsigned char*hook,int len)
+{
+    unsigned char*jmp=(unsigned char*)fake_malloc(len+5);
+    LinuxVirtualProtect(orig,len,PROT_READ|PROT_WRITE|PROT_EXEC);
+    memcpy(jmp,orig,len);
+    jmp+=len; // increment to the end of the copied bytes
+    jmp[0]=0xE9;
+    *(unsigned int*)(jmp+1)=(unsigned int)(orig+len-jmp)-5;
+    memset(orig,0x90,len);
+    orig[0]=0xE9;
+    *(unsigned int*)(orig+1)=(unsigned int)(hook-orig)-5;
+    //LinuxVirtualProtect(orig,len,PROT_READ|PROT_EXEC);
+    return(jmp-len);
+}
+
+void*GetAndHooksEngineThread(void*arg)
+{
+    cldll_func_t*pExportTable=0;
+    cl_enginefunc_t*pEngfuncs=0;
+    engine_studio_api_t*pEngineStudio=0;
+
+    //Engine
+    while(!(pEngfuncs=(cl_enginefunc_t*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"gEngfuncs")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));//60fps
+    while(!(pEngineStudio=(engine_studio_api_t*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"IEngineStudio")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    memcpy(&gEngfuncs,pEngfuncs,sizeof(cl_enginefunc_t));
+    memcpy(&gEngStudio,pEngineStudio,sizeof(cl_enginefunc_t));
+
+    //User messages
+    puts("[B#] UserMsg trampolines begin!");
+    while(!(dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z18__MsgFunc_TeamInfoPKciPv")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pTeamInfo=(pfnUserMsgHook)DetourFunction((unsigned char*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z18__MsgFunc_TeamInfoPKciPv"),
+                                                          (unsigned char*)&TeamInfo,5);
+    while(!(dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z19__MsgFunc_CurWeaponPKciPv")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pCurWeapon=(pfnUserMsgHook)DetourFunction((unsigned char*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z19__MsgFunc_CurWeaponPKciPv"),
+                                                            (unsigned char*)&CurWeapon,9);
+    while(!(dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z21__MsgFunc_ScoreAttribPKciPv")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pScoreAttrib=(pfnUserMsgHook)DetourFunction((unsigned char*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z21__MsgFunc_ScoreAttribPKciPv"),
+                                                              (unsigned char*)&ScoreAttrib,8);
+    while(!(dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z16__MsgFunc_SetFOVPKciPv")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pSetFOV=(pfnUserMsgHook)DetourFunction((unsigned char*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z16__MsgFunc_SetFOVPKciPv"),
+                                                        (unsigned char*)&SetFOV,8);
+    while(!(dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z16__MsgFunc_HealthPKciPv")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pHealth=(pfnUserMsgHook)DetourFunction((unsigned char*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z16__MsgFunc_HealthPKciPv"),
+                                                        (unsigned char*)&Health,7);
+    while(!(dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z17__MsgFunc_BatteryPKciPv")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pBattery=(pfnUserMsgHook)DetourFunction((unsigned char*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z17__MsgFunc_BatteryPKciPv"),
+                                                          (unsigned char*)&Battery,7);
+    //ScoreInfo
+    while(!(dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z18__MsgFunc_DeathMsgPKciPv")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pDeathMsg=(pfnUserMsgHook)DetourFunction((unsigned char*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z18__MsgFunc_DeathMsgPKciPv"),
+                                                          (unsigned char*)&DeathMsg,7);
+    //SayText
+    //Damage
+    while(!(dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z15__MsgFunc_AmmoXPKciPv")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pAmmoX=(pfnUserMsgHook)DetourFunction((unsigned char*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z15__MsgFunc_AmmoXPKciPv"),
+                                                        (unsigned char*)&AmmoX,8);
+    while(!(CH4::Pointers::Money=(pfnUserMsgHook)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z15__MsgFunc_MoneyPKciPv")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pMoney=(pfnUserMsgHook)DetourFunction((unsigned char*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z15__MsgFunc_MoneyPKciPv"),
+                                                        (unsigned char*)&Money,8);
+    while(!(dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z15__MsgFunc_RadarPKciPv")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pRadar=(pfnUserMsgHook)DetourFunction((unsigned char*)dlsym(dlopen(szFullClientDllPath,RTLD_NOW),"_Z15__MsgFunc_RadarPKciPv"),
+                                                        (unsigned char*)&Radar,8);
+    /*WeaponList
+    Fog
+    BombDrop
+    BombPickup
+    HostagePos
+    HostageK
+    ServerName*/
+    puts("[B#] UserMsg trampolines end!");
+
+    //Export Table
+    while(!(pExportTable=(cldll_func_t*)dlsym(dlopen(szHwSo,RTLD_NOW),"cl_funcs")))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    memcpy(&gExport,pExportTable,sizeof(cldll_func_t));
+
+    //HUD_Redraw
+    while(!(pExportTable->pPostRunCmd))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pExportTable->pPostRunCmd=(HUD_POSTRUNCMD_FUNC)&HUD_PostRunCmd;
+
+    while(!(pExportTable->pCalcRefdef))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pExportTable->pCalcRefdef=(HUD_CALCREF_FUNC)&V_CalcRefdef;
+
+    //HUD_PlayerMoveInit
+    while(!(pExportTable->pClientMove))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pExportTable->pClientMove=(HUD_CLIENTMOVE_FUNC)&HUD_PlayerMove;
+
+    while(!(pExportTable->pCL_CreateMove))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pExportTable->pCL_CreateMove=(HUD_CLIENTMOVE_FUNC)&CL_CreateMove;
+
+    while(!(pExportTable->pAddEntity))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pExportTable->pAddEntity=(HUD_ADDENTITY_FUNC)&HUD_AddEntity;
+
+    //HUD_Key_Event
+    //HUD_UpdateClientData
+
+    while(!(pExportTable->pHudFrame))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    pExportTable->pHudFrame=(HUD_FRAME_FUNC)&HUD_Frame;
+
+    /*while(!(pExportTable->pHudInitFunc))
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    CH4::Pointers::HUD_Init=(HUD_INIT_FUNC)pExportTable->pHudInitFunc;*/
+    pthread_exit(0);
+}
 
 static void Crianosfera_FakeEntry_Constructor_Point(int argc,char*argv[],char*envp[])
 {
