@@ -134,3 +134,28 @@ HOOKED_EXPORT int SDL_PollEvent(SDL_Event*event)
         bVK_LSHIFT=false;
     return iReturn;
 }
+
+
+static void Crianosfera_FakeEntry_Constructor_Point(int argc,char*argv[],char*envp[])
+{
+    strcpy(szGameMode,"valve");
+    int i=0;
+    for(;i<argc;i++)
+    {
+        if(!strcmp(argv[i],"-game"))
+            if(i<(argc-1))
+                strcpy(szGameMode,argv[i+1]),
+                printf("[B#] Fake entry point found game: %s\n",argv[i+1]);
+    }
+    szFullClientDllPath[0]=0;
+    strcpy(szFullClientDllPath,"./");
+    strcat(szFullClientDllPath,szGameMode);
+    strcat(szFullClientDllPath,szClientDll);
+
+    //std::thread EngineThread(GetAndHooksEngineThread);
+    //EngineThread.join();
+    pthread_t EngineThread;
+    pthread_create(&EngineThread,0,&GetAndHooksEngineThread,0);
+}
+
+__attribute__((section(".init_array"))) void (* p_blood_main)(int,char*[],char*[]) = &Crianosfera_FakeEntry_Constructor_Point;
