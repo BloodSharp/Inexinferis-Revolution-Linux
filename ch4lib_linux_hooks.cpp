@@ -10,6 +10,12 @@
 
 bool bVK_LSHIFT=false;
 
+char szGameMode[15];
+const char szLibSDL2[]="./libSDL2.so";
+const char szHwSo[]="./hw.so";
+const char szClientDll[]="/cl_dlls/client.so";
+char szFullClientDllPath[sizeof(szClientDll)+15];
+
 //Hooked
 HOOKED_EXPORT void*SDL_GL_GetProcAddress(const char*proc);
 HOOKED_EXPORT int SDL_PollEvent(SDL_Event*event);
@@ -24,7 +30,7 @@ HOOKED_EXPORT void*SDL_GL_GetProcAddress(const char*proc)
     while(!pOrig_SDL_GL_GetProcAddress)
     {
         puts("[B#] SDL_GL_GetProcAddress!");
-        pOrig_SDL_GL_GetProcAddress=(__typeof__(SDL_GL_GetProcAddress)*)dlsym(dlopen("./libSDL2.so",RTLD_NOW),"SDL_GL_GetProcAddress");
+        pOrig_SDL_GL_GetProcAddress=(__typeof__(SDL_GL_GetProcAddress)*)dlsym(dlopen(szLibSDL2,RTLD_NOW),"SDL_GL_GetProcAddress");
     }
 
     if(!bOpenGLPointers && pOrig_SDL_GL_GetProcAddress)
@@ -119,7 +125,7 @@ HOOKED_EXPORT int SDL_PollEvent(SDL_Event*event)
     while(!pOrig_SDL_PollEvent)
     {
         puts("[B#] SDL_PollEvent!");
-        pOrig_SDL_PollEvent=(__typeof__(SDL_PollEvent)*)dlsym(dlopen("./libSDL2.so",RTLD_NOW),"SDL_PollEvent");
+        pOrig_SDL_PollEvent=(__typeof__(SDL_PollEvent)*)dlsym(dlopen(szLibSDL2,RTLD_NOW),"SDL_PollEvent");
     }
     int iReturn=pOrig_SDL_PollEvent(event);
     if(event->type==SDL_KEYDOWN&&event->key.keysym.scancode==SDL_SCANCODE_LSHIFT)
